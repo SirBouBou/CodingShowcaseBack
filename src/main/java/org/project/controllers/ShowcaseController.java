@@ -1,6 +1,5 @@
 package org.project.controllers;
 
-import org.project.models.Game;
 import org.project.models.Showcase;
 import org.project.repository.ShowcaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ public class ShowcaseController {
     ShowcaseRepository showcaseRepository;
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAllShowcases() {
+    public ResponseEntity<List<Showcase>> getAllShowcases() {
         List<Showcase> showcases = showcaseRepository.findAll();
         return ResponseEntity.ok().body(showcases);
     }

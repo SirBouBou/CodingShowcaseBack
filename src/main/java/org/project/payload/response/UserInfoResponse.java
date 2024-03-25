@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.Setter;
 import org.project.models.Profile;
 
-import java.net.Inet4Address;
 import java.util.List;
 
 @Data
