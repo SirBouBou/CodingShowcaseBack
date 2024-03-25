@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.project.models.Showcase;
-import org.project.repository.GameRepository;
 import org.project.repository.ShowcaseRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
