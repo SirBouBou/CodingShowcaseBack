@@ -70,7 +70,7 @@ public class WebSecurityConfig {
         config.setAllowedOrigins(List.of("https://codingshowcase.mainservervic.com"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         List.of("Authorization", "Content-Type");
-        config.setAllowCredentials(false);
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
