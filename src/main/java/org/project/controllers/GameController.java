@@ -1,10 +1,8 @@
 package org.project.controllers;
 
 import org.project.models.Game;
-import org.project.payload.response.UserInfoResponse;
 import org.project.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +16,14 @@ import java.util.List;
 @RequestMapping("/api/game")
 public class GameController {
 
-    @Autowired
     GameRepository gameRepository;
+    @Autowired
+    public GameController(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
+    }
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAllGames() {
+    public ResponseEntity<List> getAllGames() {
         List<Game> games = gameRepository.findAll();
         return ResponseEntity.ok().body(games);
     }
