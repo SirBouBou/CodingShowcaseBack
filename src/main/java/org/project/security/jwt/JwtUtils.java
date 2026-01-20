@@ -3,9 +3,11 @@ package org.project.security.jwt;
 import java.security.Key;
 import java.util.Date;
 
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ public class JwtUtils {
     @Value("${app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
+    @NotNull
     @Value("${app.jwtCookieName}")
     private String jwtCookie;
 

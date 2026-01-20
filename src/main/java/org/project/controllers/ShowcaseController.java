@@ -24,7 +24,7 @@ public class ShowcaseController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List> getAllShowcases() {
+    public ResponseEntity<List<Showcase>> getAllShowcases() {
         List<Showcase> showcases = showcaseRepository.findAll();
         return ResponseEntity.ok().body(showcases);
     }

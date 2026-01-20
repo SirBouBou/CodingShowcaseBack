@@ -33,12 +33,9 @@ import java.util.List;
 public class WebSecurityConfig {
     UserDetailsServiceImpl userDetailsService;
 
-    private AuthEntryPointJwt unauthorizedHandler;
-
     @Autowired
-    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
-        this.unauthorizedHandler = unauthorizedHandler;
     }
 
     @Bean
