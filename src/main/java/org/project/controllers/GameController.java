@@ -2,6 +2,7 @@ package org.project.controllers;
 
 import org.project.models.Game;
 import org.project.repository.GameRepository;
+import org.project.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,15 +15,15 @@ import java.util.List;
 @RequestMapping("/api/game")
 public class GameController {
 
-    GameRepository gameRepository;
+    GameService gameService;
     @Autowired
-    public GameController(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
     }
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Game>> getAllGames() {
-        List<Game> games = gameRepository.findAll();
+        List<Game> games = gameService.getAll();
         return ResponseEntity.ok().body(games);
     }
 }

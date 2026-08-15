@@ -34,17 +34,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         String path = request.getRequestURI();
-
-        // Ignorer les endpoints publics
-        if (path.startsWith("/api/auth/") ||
-                path.startsWith("/api/test/") ||
-                path.startsWith("/api/game/") ||
-                path.startsWith("/api/showcase/")) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -68,10 +59,19 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             logger.error("Cannot set user authentication: {}", e);
         }
 
+        // Ignorer les endpoints publics
+        if (path.startsWith("/api/auth") ||
+                path.startsWith("/api/test/all") ||
+                path.startsWith("/api/game") ||
+                path.startsWith("/api/showcase")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         filterChain.doFilter(request, response);
     }
 
     private String parseJwt(HttpServletRequest request) {
-        return jwtUtils.getJwtFromCookies(request);
+        return jwtUtils.getAccesCookie(request);
     }
 }
