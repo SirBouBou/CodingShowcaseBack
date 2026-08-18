@@ -1,4 +1,4 @@
-/**package org.project.controllers;
+package org.project.controllers;
 
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,6 +38,5 @@ public class AuthControllerTest {
         assertTrue(loginResponse.getStatusCode().equals(200));
         //ResponseEntity<MessageResponse> logoutResponse = authController.logoutUser(loginRequest);
         //assertTrue(logoutResponse.getStatusCode().equals(200));
-    }/
+    }*/
 }
-*/
