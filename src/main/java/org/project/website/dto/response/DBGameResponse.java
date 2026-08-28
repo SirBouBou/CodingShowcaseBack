@@ -3,7 +3,7 @@ package org.project.website.dto.response;
 import java.util.Date;
 import java.util.Set;
 
-public record DBVideogameResponse (
+public record DBGameResponse(
         Long id,
         String name,
         Date released,
