@@ -1,14 +1,13 @@
 package org.project.security.services;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.project.models.RefreshToken;
-import org.project.models.User;
-import org.project.repository.RefreshTokenRepository;
+import org.project.auth.model.RefreshToken;
+import org.project.auth.model.User;
+import org.project.auth.repository.RefreshTokenRepository;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Instant;

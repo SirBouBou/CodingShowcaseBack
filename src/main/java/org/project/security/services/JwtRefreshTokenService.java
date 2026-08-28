@@ -1,8 +1,8 @@
 package org.project.security.services;
 
-import org.project.models.RefreshToken;
-import org.project.models.User;
-import org.project.repository.RefreshTokenRepository;
+import org.project.auth.model.RefreshToken;
+import org.project.auth.model.User;
+import org.project.auth.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
