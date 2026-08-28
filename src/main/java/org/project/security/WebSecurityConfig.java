@@ -90,7 +90,8 @@ public class WebSecurityConfig {
                                 "/api/auth/**",
                                 "/api/test/**",
                                 "/api/game/**",
-                                "/api/showcase/**"
+                                "/api/showcase/**",
+                                "/api/website/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

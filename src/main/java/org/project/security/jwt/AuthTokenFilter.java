@@ -39,7 +39,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 || path.startsWith("/api/auth")
                 || path.startsWith("/api/test/all")
                 || path.startsWith("/api/game")
-                || path.startsWith("/api/showcase");
+                || path.startsWith("/api/showcase")
+                || path.startsWith("/api/website");
     }
 
     @Override
