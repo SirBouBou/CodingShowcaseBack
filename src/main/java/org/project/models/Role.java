@@ -1,11 +1,13 @@
 package org.project.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "roles")
+@AllArgsConstructor
 public class Role implements Serializable {
     private static final long serialVersionUID = 1L;
 

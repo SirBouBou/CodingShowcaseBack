@@ -32,16 +32,22 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+
+        return "OPTIONS".equalsIgnoreCase(request.getMethod())
+                || path.startsWith("/api/auth")
+                || path.startsWith("/api/test/all")
+                || path.startsWith("/api/game")
+                || path.startsWith("/api/showcase");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String path = request.getRequestURI();
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+            String jwt = jwtUtils.getAccessCookie(request);
+            if (jwt != null && !jwt.isBlank() && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -59,19 +65,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             logger.error("Cannot set user authentication: {}", e);
         }
 
-        // Ignorer les endpoints publics
-        if (path.startsWith("/api/auth") ||
-                path.startsWith("/api/test/all") ||
-                path.startsWith("/api/game") ||
-                path.startsWith("/api/showcase")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         filterChain.doFilter(request, response);
-    }
-
-    private String parseJwt(HttpServletRequest request) {
-        return jwtUtils.getAccesCookie(request);
     }
 }

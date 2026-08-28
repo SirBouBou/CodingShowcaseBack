@@ -85,11 +85,13 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/error/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/test/**").permitAll()
-                        .requestMatchers("/api/game/**").permitAll()
-                        .requestMatchers("/api/showcase/**").permitAll()
+                        .requestMatchers(
+                                "/error/**",
+                                "/api/auth/**",
+                                "/api/test/**",
+                                "/api/game/**",
+                                "/api/showcase/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

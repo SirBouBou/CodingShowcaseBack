@@ -2,6 +2,7 @@ package org.project.controllers;
 
 import org.project.models.Showcase;
 import org.project.repository.ShowcaseRepository;
+import org.project.services.ShowcaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,16 +15,16 @@ import java.util.List;
 @RequestMapping("/api/showcase")
 public class ShowcaseController {
 
-    ShowcaseRepository showcaseRepository;
+    ShowcaseService showcaseService;
 
     @Autowired
-    public ShowcaseController(ShowcaseRepository showcaseRepository) {
-        this.showcaseRepository = showcaseRepository;
+    public ShowcaseController(ShowcaseService showcaseService) {
+        this.showcaseService = showcaseService;
     }
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Showcase>> getAllShowcases() {
-        List<Showcase> showcases = showcaseRepository.findAll();
+        List<Showcase> showcases = showcaseService.getAll();
         return ResponseEntity.ok().body(showcases);
     }
 }

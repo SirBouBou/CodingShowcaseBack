@@ -36,7 +36,7 @@ public class JwtUtils {
     @Value("${app.jwtRefreshCookieName}")
     private String jwtRefreshCookie;
 
-    public String getAccesCookie(HttpServletRequest request) {
+    public String getAccessCookie(HttpServletRequest request) {
         return getJwtFromCookies(request, jwtAccessCookie);
     }
 
