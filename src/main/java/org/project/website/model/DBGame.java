@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -29,11 +29,12 @@ public class DBGame {
     @Size(max = 255)
     private String name;
 
-    private Date released;
+    private LocalDate released;
 
     private Float rating;
 
-    private Integer rating_count;
+    @Column(name = "rating_count")
+    private Integer ratingCount;
 
     private Integer metacritics;
 

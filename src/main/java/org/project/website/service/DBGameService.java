@@ -62,7 +62,7 @@ public class DBGameService {
                         game.getName(),
                         game.getReleased(),
                         game.getRating(),
-                        game.getRating_count(),
+                        game.getRatingCount(),
                         game.getMetacritics(),
                         game.getImage_url(),
                         platformsByGame.getOrDefault(
