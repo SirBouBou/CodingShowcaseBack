@@ -16,6 +16,7 @@ import org.springframework.web.util.WebUtils;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtUtils {
@@ -61,6 +62,10 @@ public class JwtUtils {
         return ResponseCookie.from(jwtRefreshCookie, token.getToken()).path("/api/auth").maxAge(jwtExpirationRefreshMs / 1000).httpOnly(true).secure(false).sameSite("Lax").build();
     }
 
+    public ResponseCookie generateGuestJwtCookie(String token, int expiration) {
+        return ResponseCookie.from("guest_session", token).path("/").maxAge(expiration / 1000).httpOnly(true).secure(true).sameSite("Lax").build();
+    }
+
     public ResponseCookie getCleanJwtAccessCookie() {
         return ResponseCookie.from(jwtAccessCookie, "").path("/").maxAge(0).build();
     }
@@ -95,12 +100,22 @@ public class JwtUtils {
         return false;
     }
 
-    public String generateTokenFromUsername(String username, int expiration) {
+    public String generateToken(String subject, int expiration, String type) {
+        Date now = new Date();
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(subject)
+                .claim("type", type)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + expiration))
+                .setExpiration(new Date((now).getTime() + expiration))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String generateTokenFromUsername(String username, int expiration) {
+        return generateToken(username, expiration, "account");
+    }
+
+    public String generateTokenForGuest(UUID guestId, int expiration) {
+        return generateToken(guestId.toString(), expiration, "guest");
     }
 }
