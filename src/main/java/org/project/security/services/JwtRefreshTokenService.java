@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,19 +18,30 @@ import java.util.UUID;
 public class JwtRefreshTokenService {
 
     @Value("${app.jwtExpirationRefreshMs}")
-    private int refreshExpiration;
+    private long refreshExpiration;
 
-    private RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    private final SecureRandom secureRandom = new SecureRandom();
 
     public JwtRefreshTokenService(RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
+    private String generateToken() {
+        byte[] bytes = new byte[32];
+        secureRandom.nextBytes(bytes);
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(bytes);
+    }
+
     public RefreshToken createRefreshToken(User user) {
+        String rawToken = generateToken();
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setExpiring(Instant.now().plusMillis(refreshExpiration));
-        refreshToken.setToken(UUID.randomUUID().toString()); // random string
+        refreshToken.setToken(rawToken);
         refreshToken.setRevoked(false);
 
         return refreshTokenRepository.save(refreshToken);

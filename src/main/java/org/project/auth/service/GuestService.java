@@ -2,6 +2,7 @@ package org.project.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.project.auth.dto.response.GuestSessionResponse;
+import org.project.auth.exception.GuestNotFoundException;
 import org.project.auth.exception.InvalidPlayerNameException;
 import org.project.game.model.PlayerId;
 import org.project.game.model.PlayerIdentity;
@@ -54,6 +55,19 @@ public class GuestService {
         }
 
         guest.setDisplayName(validateAndNormalizeName(name));
+    }
+
+    public PlayerIdentity getCurrentGuest(String guestId) {
+        UUID id = UUID.fromString(guestId);
+
+        PlayerIdentity guest = guests.get(id);
+
+        if (guest == null) {
+            throw new GuestNotFoundException(
+                    "Guest not found"
+            );
+        }
+        return guest;
     }
 
     private String validateAndNormalizeName(String name) {

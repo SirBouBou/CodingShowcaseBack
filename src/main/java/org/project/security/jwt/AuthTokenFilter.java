@@ -1,12 +1,14 @@
 package org.project.security.jwt;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.project.security.services.GuestUserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +38,15 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         return "OPTIONS".equalsIgnoreCase(request.getMethod())
-                || path.startsWith("/api/auth")
+                || path.equals("/api/auth/signin")
+                || path.equals("/api/auth/signup")
+                || path.equals("/api/auth/refresh")
+                || path.equals("/api/auth/signout")
                 || path.startsWith("/api/test/all")
                 || path.startsWith("/api/game")
                 || path.startsWith("/api/showcase")
                 || path.startsWith("/api/website")
-                || path.startsWith("/api/guest");
+                || path.equals("/api/guest/session");
     }
 
     @Override
@@ -50,23 +55,42 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = jwtUtils.getAccessCookie(request);
             if (jwt != null && !jwt.isBlank() && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
+                String type = jwtUtils.getTypeFromJwtToken(jwt);
+                String subject = jwtUtils.getSubjectFromJwtToken(jwt);
+                UserDetails userDetails;
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if ("USER".equals(type)) {
+                    Long userId = Long.parseLong(jwtUtils.getSubjectFromJwtToken(jwt));
+                    userDetails =
+                            userDetailsService.loadUserById(userId);
+                } else if ("GUEST".equals(type)) {
+                    UUID guestId = UUID.fromString(subject);
+                    userDetails = new GuestUserDetailsImpl(guestId);
+                } else {
+                    throw new IllegalArgumentException((
+                            "Unknown JWT type : " + type
+                            ));
+                }
 
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails,
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
                                 null,
-                                userDetails.getAuthorities());
+                                userDetails.getAuthorities()
+                        );
 
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource()
+                                .buildDetails(request)
+                );
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder
+                        .getContext()
+                        .setAuthentication(authentication);
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
         }
-
         filterChain.doFilter(request, response);
     }
 }

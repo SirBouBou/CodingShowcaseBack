@@ -37,6 +37,9 @@ public class JwtUtils {
     @Value("${app.jwtRefreshCookieName}")
     private String jwtRefreshCookie;
 
+    @Value("${app.cookie.secure")
+    private boolean cookieSecure;
+
     public String getAccessCookie(HttpServletRequest request) {
         return getJwtFromCookies(request, jwtAccessCookie);
     }
@@ -54,16 +57,16 @@ public class JwtUtils {
     }
 
     public ResponseCookie generateAccessJwtCookie(UserDetailsImpl userPrincipal) {
-        String jwt = generateTokenFromUsername(userPrincipal.getUsername(), jwtExpirationAccessMs);
-        return ResponseCookie.from(jwtAccessCookie, jwt).path("/").maxAge(jwtExpirationAccessMs / 1000).httpOnly(true).secure(false).sameSite("Lax").build(); //TODO : Check if sameSite should be Lax
+        String jwt = generateTokenForUser(userPrincipal.getId(), jwtExpirationAccessMs);
+        return ResponseCookie.from(jwtAccessCookie, jwt).path("/").maxAge(jwtExpirationAccessMs / 1000).httpOnly(true).secure(cookieSecure).sameSite("Lax").build(); //TODO : Check if sameSite should be Lax
     }
 
     public ResponseCookie generateRefreshJwtCookie(RefreshToken token) {
-        return ResponseCookie.from(jwtRefreshCookie, token.getToken()).path("/api/auth").maxAge(jwtExpirationRefreshMs / 1000).httpOnly(true).secure(false).sameSite("Lax").build();
+        return ResponseCookie.from(jwtRefreshCookie, token.getToken()).path("/api/auth").maxAge(jwtExpirationRefreshMs / 1000).httpOnly(true).secure(cookieSecure).sameSite("Lax").build();
     }
 
     public ResponseCookie generateGuestJwtCookie(String token, int expiration) {
-        return ResponseCookie.from("guest_session", token).path("/").maxAge(expiration / 1000).httpOnly(true).secure(true).sameSite("Lax").build();
+        return ResponseCookie.from(jwtAccessCookie, token).path("/").maxAge(expiration / 1000).httpOnly(true).secure(cookieSecure).sameSite("Lax").build();
     }
 
     public ResponseCookie getCleanJwtAccessCookie() {
@@ -74,9 +77,22 @@ public class JwtUtils {
         return ResponseCookie.from(jwtRefreshCookie, "").path("/api/auth").maxAge(0).build();
     }
 
-    public String getUserNameFromJwtToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key()).build()
-                .parseClaimsJws(token).getBody().getSubject();
+    public String getSubjectFromJwtToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public String getTypeFromJwtToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("type", String.class);
     }
 
     private Key key() {
@@ -111,11 +127,11 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String generateTokenFromUsername(String username, int expiration) {
-        return generateToken(username, expiration, "account");
+    public String generateTokenForUser(Long id, int expiration) {
+        return generateToken(id.toString(), expiration, "USER");
     }
 
     public String generateTokenForGuest(UUID guestId, int expiration) {
-        return generateToken(guestId.toString(), expiration, "guest");
+        return generateToken(guestId.toString(), expiration, "GUEST");
     }
 }

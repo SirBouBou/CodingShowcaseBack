@@ -9,18 +9,22 @@ import org.project.auth.dto.response.MessageResponse;
 import org.project.auth.dto.response.SigninResponse;
 import org.project.auth.dto.response.SignoutResponse;
 import org.project.auth.dto.response.UserInfoResponse;
+import org.project.game.model.PlayerId;
+import org.project.game.model.PlayerIdentity;
+import org.project.game.model.PlayerType;
 import org.project.security.jwt.JwtUtils;
 import org.project.auth.service.AuthService;
+import org.project.security.services.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -41,12 +45,13 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<UserInfoResponse> signin(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<PlayerIdentity> signin(@Valid @RequestBody LoginRequest loginRequest) {
         SigninResponse response = authService.authenticateUser(loginRequest);
+        PlayerIdentity result = new PlayerIdentity(new PlayerId(PlayerType.USER, response.userInfoResponse().getId().toString()), response.userInfoResponse().getUsername());
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, response.accessCookie())
                 .header(HttpHeaders.SET_COOKIE, response.refreshCookie())
-                .body(response.userInfoResponse());
+                .body(result);
     }
 
     @PostMapping("/signup")
@@ -96,6 +101,16 @@ public class AuthController {
                 .body(
                         new MessageResponse("Access token refreshed")
                 );
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<PlayerIdentity> getCurrentUser(Authentication authentication) {
+        UserDetailsImpl userDetails =
+                (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(
+                authService.getCurrentUser(userDetails.getId())
+        );
     }
 
 }

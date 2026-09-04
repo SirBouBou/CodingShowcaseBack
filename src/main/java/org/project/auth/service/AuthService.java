@@ -1,6 +1,7 @@
 package org.project.auth.service;
 
 import org.project.auth.controller.AuthController;
+import org.project.auth.exception.UserNotFoundException;
 import org.project.auth.model.*;
 import org.project.common.enums.RegisterResult;
 import org.project.auth.dto.request.LoginRequest;
@@ -12,6 +13,9 @@ import org.project.auth.repository.ProfileRepository;
 import org.project.auth.repository.RefreshTokenRepository;
 import org.project.auth.repository.RoleRepository;
 import org.project.auth.repository.UserRepository;
+import org.project.game.model.PlayerId;
+import org.project.game.model.PlayerIdentity;
+import org.project.game.model.PlayerType;
 import org.project.security.jwt.JwtUtils;
 import org.project.security.services.JwtRefreshTokenService;
 import org.project.security.services.UserDetailsImpl;
@@ -175,5 +179,23 @@ public class AuthService {
         logger.info("Access Token Refreshed");
 
         return Optional.of(accessCookie.toString());
+    }
+
+    public PlayerIdentity getCurrentUser(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new UserNotFoundException(
+                                "User not found"
+                        )
+                );
+
+        return new PlayerIdentity(
+                new PlayerId(
+                        PlayerType.USER,
+                        user.getId().toString()
+                ),
+                user.getUsername()
+        );
     }
 }

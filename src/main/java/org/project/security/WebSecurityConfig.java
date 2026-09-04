@@ -87,7 +87,11 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
                                 "/error/**",
-                                "/api/auth/**",
+                                "/api/auth/signin",
+                                "/api/auth/signup",
+                                "/api/auth/refresh",
+                                "/api/auth/signout",
+                                "/api/guest/session",
                                 "/api/test/**",
                                 "/api/game/**",
                                 "/api/showcase/**",
