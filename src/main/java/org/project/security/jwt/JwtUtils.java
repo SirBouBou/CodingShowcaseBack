@@ -37,7 +37,7 @@ public class JwtUtils {
     @Value("${app.jwtRefreshCookieName}")
     private String jwtRefreshCookie;
 
-    @Value("${app.cookie.secure")
+    @Value("${app.cookie.secure}")
     private boolean cookieSecure;
 
     public String getAccessCookie(HttpServletRequest request) {

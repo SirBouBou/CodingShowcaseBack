@@ -31,10 +31,12 @@ class AuthEntryPointJwtTests {
     @Mock
     private AuthenticationException authException;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
     void commence_shouldReturnUnauthorizedResponse() throws Exception {
         // Arrange
-        AuthEntryPointJwt entryPoint = new AuthEntryPointJwt();
+        AuthEntryPointJwt entryPoint = new AuthEntryPointJwt(objectMapper);
 
         String message = "Invalid JWT token";
         String path = "/api/users";

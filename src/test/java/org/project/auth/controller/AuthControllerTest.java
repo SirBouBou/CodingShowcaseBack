@@ -9,6 +9,9 @@ import org.project.auth.dto.request.SignupRequest;
 import org.project.auth.dto.response.SigninResponse;
 import org.project.auth.dto.response.SignoutResponse;
 import org.project.auth.dto.response.UserInfoResponse;
+import org.project.game.model.PlayerId;
+import org.project.game.model.PlayerIdentity;
+import org.project.game.model.PlayerType;
 import org.project.security.jwt.JwtUtils;
 import org.project.auth.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +57,8 @@ class AuthControllerTest {
                         null
                 );
 
+        PlayerId playerResult = new PlayerId(PlayerType.USER, "1");
+
         ResponseCookie accessCookie =
                 ResponseCookie.from("access", "access-jwt").build();
 
@@ -79,10 +84,9 @@ class AuthControllerTest {
                                 .content(json)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.username").value("bob"))
-                .andExpect(jsonPath("$.email").value("bob@test.com"))
-                .andExpect(jsonPath("$.roles[0]").value("ROLE_USER"));
+                .andExpect(jsonPath("$.id.type").value("USER"))
+                .andExpect(jsonPath("$.id.value").value("1"))
+                .andExpect(jsonPath("$.displayName").value("bob"));
 
         verify(authService)
                 .authenticateUser(any(LoginRequest.class));
