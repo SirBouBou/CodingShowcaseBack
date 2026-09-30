@@ -2,6 +2,7 @@ package org.project.common.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.project.auth.exception.GuestNotFoundException;
 import org.project.auth.exception.InvalidPlayerNameException;
 import org.project.common.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +24,11 @@ public class GlobalExceptionHandler {
                         exception.getMessage(),
                         request.getServletPath()
                 ));
+    }
+
+    @ExceptionHandler(GuestNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleGuestNotFound(GuestNotFoundException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .notFound().build();
     }
 }

@@ -1,4 +1,4 @@
-package org.project.security;
+package org.project.common.config;
 
 import org.project.security.jwt.AuthEntryPointJwt;
 import org.project.security.jwt.AuthTokenFilter;

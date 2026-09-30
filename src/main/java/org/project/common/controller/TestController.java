@@ -17,9 +17,9 @@ public class TestController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> userAccess() {
-        return ResponseEntity.ok().body("User Content.");
+        return ResponseEntity.ok().body("Any user or guest Content.");
     }
 
     @GetMapping("/mod")
