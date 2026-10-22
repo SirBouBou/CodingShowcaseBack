@@ -13,6 +13,7 @@ import org.project.common.enums.RegisterResult;
 import org.project.auth.dto.request.LoginRequest;
 import org.project.auth.dto.request.SignupRequest;
 import org.project.auth.dto.response.SigninResponse;
+import org.project.auth.dto.response.SignoutResponse;
 import org.project.auth.dto.response.UserInfoResponse;
 import org.project.auth.repository.ProfileRepository;
 import org.project.auth.repository.RefreshTokenRepository;
@@ -173,6 +174,88 @@ public class AuthServiceTest {
         SignupRequest signupRequest = new SignupRequest("testUsernameDiff", "emaildiff@email.com", "passwordDiff", null);
         RegisterResult result = authService.registerUser(signupRequest);
         assertEquals("Le resultat doit retourner Success", RegisterResult.SUCCESS, result);
+    }
+
+    @Test
+    void register_shouldFailWhenUserRoleIsMissing() {
+        when(roleRepository.findByName(ERole.ROLE_USER)).thenReturn(Optional.empty());
+        SignupRequest request = new SignupRequest("new-user", "new@example.com", "password", null);
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> authService.registerUser(request));
+
+        org.junit.jupiter.api.Assertions.assertEquals("Error: Role user is not found.", exception.getMessage());
+        verify(profileRepository, never()).save(any(Profile.class));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void logoutClearsCookiesAndRevokesMatchingRefreshToken() {
+        RefreshToken token = new RefreshToken();
+        when(refreshTokenRepository.findByToken("refresh-token")).thenReturn(Optional.of(token));
+        when(jwtUtils.getCleanJwtAccessCookie()).thenReturn(ResponseCookie.from("access", "").build());
+        when(jwtUtils.getCleanJwtRefreshCookie()).thenReturn(ResponseCookie.from("refresh", "").build());
+
+        SignoutResponse response = authService.logoutUser("refresh-token");
+
+        org.junit.jupiter.api.Assertions.assertEquals("access=", response.AccessCookie());
+        org.junit.jupiter.api.Assertions.assertEquals("refresh=", response.RefreshCookie());
+        verify(jwtRefreshTokenService).revokeToken(token);
+    }
+
+    @Test
+    void logoutWithoutRefreshTokenDoesNotLookUpOrRevokeToken() {
+        when(jwtUtils.getCleanJwtAccessCookie()).thenReturn(ResponseCookie.from("access", "").build());
+        when(jwtUtils.getCleanJwtRefreshCookie()).thenReturn(ResponseCookie.from("refresh", "").build());
+
+        authService.logoutUser(null);
+
+        verifyNoInteractions(refreshTokenRepository, jwtRefreshTokenService);
+    }
+
+    @Test
+    void refreshReturnsEmptyForMissingUnknownOrExpiredToken() {
+        org.junit.jupiter.api.Assertions.assertTrue(authService.refreshToken(null).isEmpty());
+        when(refreshTokenRepository.findByToken("unknown")).thenReturn(Optional.empty());
+        org.junit.jupiter.api.Assertions.assertTrue(authService.refreshToken("unknown").isEmpty());
+
+        RefreshToken expired = new RefreshToken();
+        when(refreshTokenRepository.findByToken("expired")).thenReturn(Optional.of(expired));
+        when(jwtRefreshTokenService.verifyExpiration(expired)).thenReturn(Optional.empty());
+        org.junit.jupiter.api.Assertions.assertTrue(authService.refreshToken("expired").isEmpty());
+        verify(userDetailsService, never()).loadUserByUsername(anyString());
+    }
+
+    @Test
+    void refreshCreatesAccessCookieForValidRefreshToken() {
+        User user = new User();
+        user.setUsername("alice");
+        RefreshToken token = new RefreshToken();
+        token.setUser(user);
+        UserDetailsImpl details = mock(UserDetailsImpl.class);
+        when(refreshTokenRepository.findByToken("valid")).thenReturn(Optional.of(token));
+        when(jwtRefreshTokenService.verifyExpiration(token)).thenReturn(Optional.of(token));
+        when(userDetailsService.loadUserByUsername("alice")).thenReturn(details);
+        when(jwtUtils.generateAccessJwtCookie(details))
+                .thenReturn(ResponseCookie.from("access", "new-access").build());
+
+        Optional<String> result = authService.refreshToken("valid");
+
+        org.junit.jupiter.api.Assertions.assertEquals(Optional.of("access=new-access"), result);
+    }
+
+    @Test
+    void resolvesCurrentUserAndReportsMissingUser() {
+        User user = new User();
+        user.setId(9L);
+        user.setUsername("alice");
+        when(userRepository.findById(9L)).thenReturn(Optional.of(user));
+        org.junit.jupiter.api.Assertions.assertEquals("9", authService.getCurrentUser(9L).getId().value());
+        org.junit.jupiter.api.Assertions.assertEquals("alice", authService.getCurrentUser(9L).getDisplayName());
+
+        when(userRepository.findById(10L)).thenReturn(Optional.empty());
+        assertThrows(org.project.auth.exception.UserNotFoundException.class,
+                () -> authService.getCurrentUser(10L));
     }
 
 /*    @Test

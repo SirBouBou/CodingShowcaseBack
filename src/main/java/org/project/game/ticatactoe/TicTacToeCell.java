@@ -6,7 +6,7 @@ public enum TicTacToeCell {
     O(-1);
 
     private final int value;
-    private TicTacToeCell(int value) {
+    TicTacToeCell(int value) {
         this.value = value;
     }
 

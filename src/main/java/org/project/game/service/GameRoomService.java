@@ -131,8 +131,11 @@ public class GameRoomService {
     }
 
     public Optional<GameDto> getGame(UUID roomId) {
-        Optional<GameDto> result = Optional.ofNullable(rooms.get(roomId).getGameDto());
-        return result;
+        GameRoom room = rooms.get(roomId);
+        if(room == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(room.getGameDto());
     }
 
     public Optional<GameDto> play(UUID roomId, PlayerIdentity player, GameMove move) {
