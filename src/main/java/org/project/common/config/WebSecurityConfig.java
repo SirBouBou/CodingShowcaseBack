@@ -94,6 +94,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
+                                "/ws",
                                 "/api/auth/csrf",
                                 "/error/**",
                                 "/api/auth/signin",
