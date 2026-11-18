@@ -58,7 +58,7 @@ public class JwtUtils {
 
     public ResponseCookie generateAccessJwtCookie(UserDetailsImpl userPrincipal) {
         String jwt = generateTokenForUser(userPrincipal.getId(), jwtExpirationAccessMs);
-        return ResponseCookie.from(jwtAccessCookie, jwt).path("/").maxAge(jwtExpirationAccessMs / 1000).httpOnly(true).secure(cookieSecure).sameSite("Lax").build(); //TODO : Check if sameSite should be Lax
+        return ResponseCookie.from(jwtAccessCookie, jwt).path("/").maxAge(jwtExpirationAccessMs / 1000).httpOnly(true).secure(cookieSecure).sameSite("Lax").build(); //SameSite Lax seems enough for security
     }
 
     public ResponseCookie generateRefreshJwtCookie(RefreshToken token) {

@@ -38,6 +38,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         return "OPTIONS".equalsIgnoreCase(request.getMethod())
+                || path.equals("/api/auth/csrf")
                 || path.equals("/api/auth/signin")
                 || path.equals("/api/auth/signup")
                 || path.equals("/api/auth/refresh")
