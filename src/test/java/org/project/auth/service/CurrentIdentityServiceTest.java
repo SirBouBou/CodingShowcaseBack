@@ -3,8 +3,8 @@ package org.project.auth.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.project.auth.exception.GuestNotFoundException;
-import org.project.game.model.PlayerIdentity;
 import org.project.game.model.PlayerId;
+import org.project.game.model.PlayerIdentity;
 import org.project.game.model.PlayerType;
 import org.project.security.services.GuestUserDetailsImpl;
 import org.project.security.services.UserDetailsImpl;
@@ -14,7 +14,8 @@ import org.springframework.security.core.Authentication;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class CurrentIdentityServiceTest {

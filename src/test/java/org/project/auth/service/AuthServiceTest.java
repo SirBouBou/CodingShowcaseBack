@@ -7,18 +7,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.project.auth.model.*;
-import org.project.auth.service.AuthService;
-import org.project.common.enums.RegisterResult;
 import org.project.auth.dto.request.LoginRequest;
 import org.project.auth.dto.request.SignupRequest;
 import org.project.auth.dto.response.SigninResponse;
 import org.project.auth.dto.response.SignoutResponse;
 import org.project.auth.dto.response.UserInfoResponse;
+import org.project.auth.model.*;
 import org.project.auth.repository.ProfileRepository;
 import org.project.auth.repository.RefreshTokenRepository;
 import org.project.auth.repository.RoleRepository;
 import org.project.auth.repository.UserRepository;
+import org.project.common.enums.RegisterResult;
 import org.project.security.jwt.JwtUtils;
 import org.project.security.services.JwtRefreshTokenService;
 import org.project.security.services.UserDetailsImpl;
@@ -36,7 +35,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
@@ -119,7 +117,7 @@ public class AuthServiceTest {
         SigninResponse result = authService.authenticateUser(loginRequest);
         assertEquals("Le resultat doit contenir un access cookie", "access=access-token", result.accessCookie());
         assertEquals("Le resultat doit contenir un refresh cookie", "refresh=refresh-token", result.refreshCookie());
-        assertEquals("Le resultat doit contenir les infos de l'utilisateurs", validResult , result.userInfoResponse());
+        assertEquals("Le resultat doit contenir les infos de l'utilisateurs", validResult, result.userInfoResponse());
 
         verify(authenticationManager).authenticate(
                 any(UsernamePasswordAuthenticationToken.class)

@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.project.showcase.model.Showcase;
 import org.project.showcase.repository.ShowcaseRepository;
-import org.project.showcase.service.ShowcaseService;
 
 import java.util.Arrays;
 import java.util.List;

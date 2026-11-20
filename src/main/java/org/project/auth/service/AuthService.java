@@ -1,18 +1,18 @@
 package org.project.auth.service;
 
 import org.project.auth.controller.AuthController;
-import org.project.auth.exception.UserNotFoundException;
-import org.project.auth.model.*;
-import org.project.common.enums.RegisterResult;
 import org.project.auth.dto.request.LoginRequest;
 import org.project.auth.dto.request.SignupRequest;
 import org.project.auth.dto.response.SigninResponse;
 import org.project.auth.dto.response.SignoutResponse;
 import org.project.auth.dto.response.UserInfoResponse;
+import org.project.auth.exception.UserNotFoundException;
+import org.project.auth.model.*;
 import org.project.auth.repository.ProfileRepository;
 import org.project.auth.repository.RefreshTokenRepository;
 import org.project.auth.repository.RoleRepository;
 import org.project.auth.repository.UserRepository;
+import org.project.common.enums.RegisterResult;
 import org.project.game.model.PlayerId;
 import org.project.game.model.PlayerIdentity;
 import org.project.game.model.PlayerType;
@@ -68,9 +68,9 @@ public class AuthService {
 
     @Autowired
     public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository,
-                          ProfileRepository profileRepository, RoleRepository roleRepository, PasswordEncoder encoder,
-                          JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService, JwtRefreshTokenService jwtRefreshTokenService,
-                          RefreshTokenRepository refreshTokenRepository) {
+                       ProfileRepository profileRepository, RoleRepository roleRepository, PasswordEncoder encoder,
+                       JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService, JwtRefreshTokenService jwtRefreshTokenService,
+                       RefreshTokenRepository refreshTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
@@ -133,7 +133,7 @@ public class AuthService {
         user.setRoles(roles);
 
         Profile profile = new Profile();
-        if(signUpRequest.getIconId() == null) {
+        if (signUpRequest.getIconId() == null) {
             profile.setIconId(0);
         } else {
             profile.setIconId(signUpRequest.getIconId());
@@ -147,7 +147,7 @@ public class AuthService {
     }
 
     public SignoutResponse logoutUser(String jwt) {
-        if(jwt != null) {
+        if (jwt != null) {
             refreshTokenRepository.findByToken(jwt).ifPresent(jwtRefreshTokenService::revokeToken);
         }
         ResponseCookie deleteAccess = jwtUtils.getCleanJwtAccessCookie();
@@ -156,12 +156,12 @@ public class AuthService {
     }
 
     public Optional<String> refreshToken(String jwt) {
-        if(jwt == null) {
+        if (jwt == null) {
             return Optional.empty();
         }
 
         Optional<RefreshToken> refreshOpt = refreshTokenRepository.findByToken(jwt);
-        if(refreshOpt.isEmpty()) {
+        if (refreshOpt.isEmpty()) {
             return Optional.empty();
         }
 

@@ -1,9 +1,5 @@
 package org.project.auth.model;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,13 +8,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = "username"),
-            @UniqueConstraint(columnNames = "email")
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
         })
 @NoArgsConstructor
 @AllArgsConstructor

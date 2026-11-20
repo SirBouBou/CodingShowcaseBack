@@ -14,10 +14,23 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class DBGameServiceTest {
+    private static DBGame game(Long id, String name) {
+        DBGame game = new DBGame();
+        game.setId(id);
+        game.setName(name);
+        game.setReleased(LocalDate.of(2024, 1, 2));
+        game.setRating(4.5f);
+        game.setRatingCount(12);
+        game.setMetacritics(85);
+        game.setImage_url("cover.png");
+        return game;
+    }
+
     @Test
     void mapsPagedGamesAndGroupsTheirPlatformsAndGenres() {
         DBGame first = game(1L, "First");
@@ -75,17 +88,5 @@ class DBGameServiceTest {
 
         assertTrue(response.platforms().isEmpty());
         assertTrue(response.genres().isEmpty());
-    }
-
-    private static DBGame game(Long id, String name) {
-        DBGame game = new DBGame();
-        game.setId(id);
-        game.setName(name);
-        game.setReleased(LocalDate.of(2024, 1, 2));
-        game.setRating(4.5f);
-        game.setRatingCount(12);
-        game.setMetacritics(85);
-        game.setImage_url("cover.png");
-        return game;
     }
 }

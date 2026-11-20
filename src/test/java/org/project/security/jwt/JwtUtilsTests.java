@@ -48,7 +48,7 @@ class JwtUtilsTests {
         UserDetailsImpl userDetails = UserDetailsImpl.build(user);
         //Création du cookie :
         ResponseCookie cookie = jwtUtils.generateAccessJwtCookie(userDetails);
-        assertEquals("La durée de vie doit correspondre à 1/1000ème de la durée des properties", (long) jwtExpirationAccessMs/1000, cookie.getMaxAge().getSeconds());
+        assertEquals("La durée de vie doit correspondre à 1/1000ème de la durée des properties", (long) jwtExpirationAccessMs / 1000, cookie.getMaxAge().getSeconds());
         assertEquals("L'identifiant doit pouvoir être récupéré depuis le cookie", "1", jwtUtils.getSubjectFromJwtToken(cookie.getValue()));
 
         //Suppression du cookie :
@@ -63,7 +63,7 @@ class JwtUtilsTests {
 
         //Création du cookie :
         ResponseCookie cookie = jwtUtils.generateRefreshJwtCookie(refreshToken);
-        assertEquals("La durée de vie doit correspondre à 1/1000ème de la durée des properties", (long) jwtExpirationRefreshMs/1000, cookie.getMaxAge().getSeconds());
+        assertEquals("La durée de vie doit correspondre à 1/1000ème de la durée des properties", (long) jwtExpirationRefreshMs / 1000, cookie.getMaxAge().getSeconds());
         assertEquals("Le token du cookie doit correspondre au refresh token", refreshToken.getToken(), cookie.getValue());
 
         //Suppression du cookie :

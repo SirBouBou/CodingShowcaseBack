@@ -26,11 +26,11 @@ class SecurityIntegrationTest {
         mockMvc.perform(post("/api/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                    {
-                        "username": "test",
-                        "password": "test"
-                    }
-                    """))
+                                {
+                                    "username": "test",
+                                    "password": "test"
+                                }
+                                """))
                 .andExpect(status().isForbidden());
     }
 
@@ -40,11 +40,11 @@ class SecurityIntegrationTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                    {
-                        "username": "test",
-                        "password": "test"
-                    }
-                    """))
+                                {
+                                    "username": "test",
+                                    "password": "test"
+                                }
+                                """))
                 .andExpect(result ->
                         assertNotEquals(403, result.getResponse().getStatus())
                 );

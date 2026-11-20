@@ -17,6 +17,7 @@ import java.util.List;
 public class GameController {
 
     GameService gameService;
+
     @Autowired
     public GameController(GameService gameService) {
         this.gameService = gameService;

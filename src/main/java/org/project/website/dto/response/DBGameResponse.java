@@ -1,7 +1,6 @@
 package org.project.website.dto.response;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 public record DBGameResponse(
@@ -14,5 +13,5 @@ public record DBGameResponse(
         String imageUrl,
         Set<String> platforms,
         Set<String> genres
-)
-{}
+) {
+}

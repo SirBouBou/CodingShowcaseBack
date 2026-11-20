@@ -42,8 +42,8 @@ public class TicTacToeGame implements GamePlay {
     }
 
     public boolean addPlayer(PlayerIdentity player) {
-        if(this.status == GameStatus.WAITING) {
-            if(playerO == null) {
+        if (this.status == GameStatus.WAITING) {
+            if (playerO == null) {
                 this.playerO = player;
             } else if (playerX == null) {
                 this.playerX = player;
@@ -51,8 +51,8 @@ public class TicTacToeGame implements GamePlay {
                 return false;
             }
 
-            int random = (int)(Math.random()*2);
-            if(random == 0) {
+            int random = (int) (Math.random() * 2);
+            if (random == 0) {
                 currentPlayer = this.playerX;
             } else {
                 currentPlayer = this.playerO;
@@ -64,9 +64,9 @@ public class TicTacToeGame implements GamePlay {
     }
 
     public boolean removePlayer(PlayerIdentity player) {
-        if(player.equals(this.playerX)) {
+        if (player.equals(this.playerX)) {
             this.playerX = null;
-        } else if(player.equals(this.playerO)) {
+        } else if (player.equals(this.playerO)) {
             this.playerO = null;
         } else {
             return false;
@@ -76,7 +76,7 @@ public class TicTacToeGame implements GamePlay {
     }
 
     public boolean play(GameMove move) {
-        if(status != GameStatus.PLAYING) {
+        if (status != GameStatus.PLAYING) {
             return false;
         }
         PlayerIdentity player = move.player();
@@ -87,12 +87,12 @@ public class TicTacToeGame implements GamePlay {
 
         int position = (int) move.data();
 
-        if(position < 0 || position > 8) {
+        if (position < 0 || position > 8) {
             return false;
         }
 
         TicTacToeCell temp = TicTacToeCell.EMPTY;
-        if(player.getId().equals(playerX.getId())) {
+        if (player.getId().equals(playerX.getId())) {
             temp = TicTacToeCell.X;
         } else if (player.getId().equals(playerO.getId())) {
             temp = TicTacToeCell.O;
@@ -109,14 +109,14 @@ public class TicTacToeGame implements GamePlay {
         }
 
         board[position] = temp;
-        if(!checkEnd()) {
+        if (!checkEnd()) {
             nextTurn();
         }
         return true;
     }
 
     public void nextTurn() {
-        if(currentPlayer.getId().equals(playerX.getId())) {
+        if (currentPlayer.getId().equals(playerX.getId())) {
             currentPlayer = playerO;
         } else {
             currentPlayer = playerX;
@@ -126,28 +126,28 @@ public class TicTacToeGame implements GamePlay {
     public Boolean checkEnd() {
         int caseToEnd = 9;
         for (int i = 0; i < 9; i++) {
-            if(board[i] != TicTacToeCell.EMPTY) {
+            if (board[i] != TicTacToeCell.EMPTY) {
                 caseToEnd--;
             }
         }
-        int[] result = {0,0,0,0,0,0,0,0};//r1,r2,r3,c1,c2,c3,d1,d2
-        for(int i = 0; i < 3; i++) {
+        int[] result = {0, 0, 0, 0, 0, 0, 0, 0};//r1,r2,r3,c1,c2,c3,d1,d2
+        for (int i = 0; i < 3; i++) {
             result[0] += board[i].getValue();
-            result[1] += board[i+3].getValue();
-            result[2] += board[i+6].getValue();
-            result[3] += board[i*3].getValue();
-            result[4] += board[i*3+1].getValue();
-            result[5] += board[i*3+2].getValue();
-            result[6] += board[i*4].getValue();
-            result[7] += board[(i+1)*2].getValue();
+            result[1] += board[i + 3].getValue();
+            result[2] += board[i + 6].getValue();
+            result[3] += board[i * 3].getValue();
+            result[4] += board[i * 3 + 1].getValue();
+            result[5] += board[i * 3 + 2].getValue();
+            result[6] += board[i * 4].getValue();
+            result[7] += board[(i + 1) * 2].getValue();
         }
 
-        for(int val : result) {
-            if(val == 3) {
+        for (int val : result) {
+            if (val == 3) {
                 status = GameStatus.FINISHED;
                 winner = playerX;
                 return true;
-            } else if(val == -3) {
+            } else if (val == -3) {
                 status = GameStatus.FINISHED;
                 winner = playerO;
                 return true;

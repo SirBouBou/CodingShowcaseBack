@@ -2,17 +2,21 @@ package org.project.game.ticatactoe;
 
 import org.junit.jupiter.api.Test;
 import org.project.game.dto.TicTacToeGameDto;
-import org.project.game.model.GameMove;
-import org.project.game.model.GameStatus;
-import org.project.game.model.PlayerId;
-import org.project.game.model.PlayerIdentity;
-import org.project.game.model.PlayerType;
+import org.project.game.model.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TicTacToeGameTest {
     private final PlayerIdentity playerX = player("x");
     private final PlayerIdentity playerO = player("o");
+
+    private static GameMove move(PlayerIdentity player, int position) {
+        return new GameMove(player, "PLAY", position);
+    }
+
+    private static PlayerIdentity player(String id) {
+        return new PlayerIdentity(new PlayerId(PlayerType.USER, id), id);
+    }
 
     @Test
     void initializesAndResetsBoard() {
@@ -83,7 +87,7 @@ class TicTacToeGameTest {
 
         PlayerIdentity otherTurn = game.getCurrentPlayer().equals(playerX) ? playerO : playerX;
         assertFalse(game.play(move(otherTurn, 0)));
-        assertTrue(game.getBoard()[0] == TicTacToeCell.EMPTY);
+        assertSame(game.getBoard()[0], TicTacToeCell.EMPTY);
     }
 
     @Test
@@ -166,13 +170,5 @@ class TicTacToeGameTest {
 
     private PlayerIdentity otherPlayer(PlayerIdentity player) {
         return player.equals(playerX) ? playerO : playerX;
-    }
-
-    private static GameMove move(PlayerIdentity player, int position) {
-        return new GameMove(player, "PLAY", position);
-    }
-
-    private static PlayerIdentity player(String id) {
-        return new PlayerIdentity(new PlayerId(PlayerType.USER, id), id);
     }
 }

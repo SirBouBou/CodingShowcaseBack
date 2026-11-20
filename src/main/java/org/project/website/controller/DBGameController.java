@@ -23,7 +23,7 @@ public class DBGameController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<Page<DBGameResponse>> getAll(@PageableDefault(size = 50, sort = "ratingCount", direction = Sort.Direction.DESC)Pageable pageable) {
+    public ResponseEntity<Page<DBGameResponse>> getAll(@PageableDefault(size = 50, sort = "ratingCount", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<DBGameResponse> result = dbGameService.getGames(pageable);
         return ResponseEntity.ok().body(result);
     }

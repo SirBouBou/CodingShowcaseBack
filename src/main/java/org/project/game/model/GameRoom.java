@@ -21,20 +21,20 @@ public class GameRoom {
     private GamePlay game;
 
     public boolean addPlayer(PlayerIdentity player) {
-        if(this.activePlayers == this.maxPlayers) {
+        if (this.activePlayers == this.maxPlayers) {
             return false;
         }
-        for(int i = 0; i < maxPlayers; i++) {
-            if(player.equals(this.players[i])) {
+        for (int i = 0; i < maxPlayers; i++) {
+            if (player.equals(this.players[i])) {
                 return false;
             }
         }
 
-        if(!game.addPlayer(player)) {
+        if (!game.addPlayer(player)) {
             return false;
         }
-        for(int i = 0; i < maxPlayers; i++) {
-            if(this.players[i] == null) {
+        for (int i = 0; i < maxPlayers; i++) {
+            if (this.players[i] == null) {
                 this.players[i] = player;
                 this.activePlayers++;
                 return true;
@@ -44,9 +44,9 @@ public class GameRoom {
     }
 
     public boolean removePlayer(PlayerIdentity player) {
-        for(int i = 0; i < maxPlayers; i++) {
-            if(player.equals(this.players[i])) {
-                if(!game.removePlayer(player)) {
+        for (int i = 0; i < maxPlayers; i++) {
+            if (player.equals(this.players[i])) {
+                if (!game.removePlayer(player)) {
                     return false;
                 }
                 this.players[i] = null;

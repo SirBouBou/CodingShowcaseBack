@@ -21,14 +21,14 @@ public class GameRoomService {
 
     public List<GameRoomDto> getAll() {
         List<GameRoomDto> result = new ArrayList<>();
-        rooms.forEach((k,v) -> result.add(new GameRoomDto(v)));
+        rooms.forEach((k, v) -> result.add(new GameRoomDto(v)));
         return result;
     }
 
     public List<GameRoomDto> getRoomsForGame(long gameId) {
         List<GameRoomDto> result = new ArrayList<>();
-        rooms.forEach((k,v) -> {
-            if(v.getGameId() == gameId) {
+        rooms.forEach((k, v) -> {
+            if (v.getGameId() == gameId) {
                 result.add(new GameRoomDto(v));
             }
         });
@@ -42,8 +42,8 @@ public class GameRoomService {
 
     public Optional<GameRoomDto> getCurrentRoomForPlayer(PlayerIdentity player) {
         for (GameRoom room : rooms.values()) {
-            for(PlayerIdentity roomPlayer : room.getPlayers()) {
-                if(player.equals(roomPlayer)) {
+            for (PlayerIdentity roomPlayer : room.getPlayers()) {
+                if (player.equals(roomPlayer)) {
                     return Optional.of(new GameRoomDto(room));
                 }
             }
@@ -55,7 +55,7 @@ public class GameRoomService {
         if (getCurrentRoomForPlayer(player).isPresent()) {
             return Optional.empty();
         }
-        return switch((int) gameId) {
+        return switch ((int) gameId) {
             case 2 -> Optional.of(createTicTacToe(player));
             default -> Optional.empty();
         };
@@ -76,7 +76,7 @@ public class GameRoomService {
 
     public Optional<GameRoomDto> joinRoom(UUID roomId, PlayerIdentity player) {
         GameRoom room = rooms.get(roomId);
-        if(room == null) {
+        if (room == null) {
             return Optional.empty();
         }
         Optional<GameRoomDto> currentRoom = getCurrentRoomForPlayer(player);
@@ -115,7 +115,7 @@ public class GameRoomService {
 
     public boolean leaveRoom(UUID roomId, PlayerIdentity player) {
         GameRoom room = rooms.get(roomId);
-        if(room == null || !room.removePlayer(player)) {
+        if (room == null || !room.removePlayer(player)) {
             return false;
         }
         GameRoomDto dto = new GameRoomDto(room);
@@ -124,7 +124,7 @@ public class GameRoomService {
                 "/topic/rooms",
                 new RoomEvent(RoomEventType.LEFT, dto)
         );
-        if(room.getActivePlayers() == 0) {
+        if (room.getActivePlayers() == 0) {
             rooms.remove(roomId);
         }
         return true;
@@ -132,7 +132,7 @@ public class GameRoomService {
 
     public Optional<GameDto> getGame(UUID roomId) {
         GameRoom room = rooms.get(roomId);
-        if(room == null) {
+        if (room == null) {
             return Optional.empty();
         }
         return Optional.ofNullable(room.getGameDto());

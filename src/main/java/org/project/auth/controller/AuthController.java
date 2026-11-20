@@ -2,18 +2,17 @@ package org.project.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.project.common.enums.RegisterResult;
 import org.project.auth.dto.request.LoginRequest;
 import org.project.auth.dto.request.SignupRequest;
 import org.project.auth.dto.response.MessageResponse;
 import org.project.auth.dto.response.SigninResponse;
 import org.project.auth.dto.response.SignoutResponse;
-import org.project.auth.dto.response.UserInfoResponse;
+import org.project.auth.service.AuthService;
+import org.project.common.enums.RegisterResult;
 import org.project.game.model.PlayerId;
 import org.project.game.model.PlayerIdentity;
 import org.project.game.model.PlayerType;
 import org.project.security.jwt.JwtUtils;
-import org.project.auth.service.AuthService;
 import org.project.security.services.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -46,6 +44,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<PlayerIdentity> signin(@Valid @RequestBody LoginRequest loginRequest) {
+        
         SigninResponse response = authService.authenticateUser(loginRequest);
         PlayerIdentity result = new PlayerIdentity(new PlayerId(PlayerType.USER, response.userInfoResponse().getId().toString()), response.userInfoResponse().getUsername());
         return ResponseEntity.ok()
@@ -57,21 +56,18 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<MessageResponse> signup(@Valid @RequestBody SignupRequest signUpRequest) {
         RegisterResult result = authService.registerUser(signUpRequest);
-        return switch(result) {
-            case SUCCESS ->
-                ResponseEntity.ok(
-                        new MessageResponse("User registered successfully !")
-                );
+        return switch (result) {
+            case SUCCESS -> ResponseEntity.ok(
+                    new MessageResponse("User registered successfully !")
+            );
 
-            case USERNAME_ALREADY_EXISTS ->
-                ResponseEntity.badRequest()
-                        .body(new MessageResponse("Username is already taken !")
-                );
+            case USERNAME_ALREADY_EXISTS -> ResponseEntity.badRequest()
+                    .body(new MessageResponse("Username is already taken !")
+                    );
 
-            case EMAIL_ALREADY_EXISTS ->
-                ResponseEntity.badRequest()
-                        .body(new MessageResponse("Email is already taken !")
-                );
+            case EMAIL_ALREADY_EXISTS -> ResponseEntity.badRequest()
+                    .body(new MessageResponse("Email is already taken !")
+                    );
         };
     }
 
@@ -88,7 +84,7 @@ public class AuthController {
     public ResponseEntity<MessageResponse> refresh(HttpServletRequest request) {
         String jwt = jwtUtils.getRefreshCookie(request);
         Optional<String> result = authService.refreshToken(jwt);
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .build();

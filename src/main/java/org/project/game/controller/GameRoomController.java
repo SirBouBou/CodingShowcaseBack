@@ -32,7 +32,7 @@ public class GameRoomController {
     }
 
     @GetMapping(params = "gameId")
-    public ResponseEntity<List<GameRoomDto>> getRoomForGame(@RequestParam long gameId){
+    public ResponseEntity<List<GameRoomDto>> getRoomForGame(@RequestParam long gameId) {
         List<GameRoomDto> result = gameRoomService.getRoomsForGame(gameId);
         return ResponseEntity.ok().body(result);
     }
@@ -40,7 +40,7 @@ public class GameRoomController {
     @GetMapping("/{roomId}")
     public ResponseEntity<GameRoomDto> getRoom(@PathVariable UUID roomId) {
         Optional<GameRoomDto> result = gameRoomService.getRoom(roomId);
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(result.get());
@@ -50,7 +50,7 @@ public class GameRoomController {
     public ResponseEntity<GameRoomDto> getCurrentRoom(Authentication authentication) {
         PlayerIdentity player = currentIdentityService.getCurrentIdentity(authentication);
         Optional<GameRoomDto> result = gameRoomService.getCurrentRoomForPlayer(player);
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(result.get());
@@ -67,7 +67,7 @@ public class GameRoomController {
     public ResponseEntity<GameRoomDto> createRoom(@RequestParam long gameId, Authentication authentication) {
         PlayerIdentity player = currentIdentityService.getCurrentIdentity(authentication);
         Optional<GameRoomDto> result = gameRoomService.createGameRoom(gameId, player);
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().body(result.get());
@@ -77,7 +77,7 @@ public class GameRoomController {
     public ResponseEntity<GameRoomDto> joinRoom(@PathVariable UUID roomId, Authentication authentication) {
         PlayerIdentity player = currentIdentityService.getCurrentIdentity(authentication);
         Optional<GameRoomDto> result = gameRoomService.joinRoom(roomId, player);
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().body(result.get());
@@ -87,7 +87,7 @@ public class GameRoomController {
     public ResponseEntity leaveRoom(@PathVariable UUID roomId, Authentication authentication) {
         PlayerIdentity player = currentIdentityService.getCurrentIdentity(authentication);
         boolean result = gameRoomService.leaveRoom(roomId, player);
-        if(!result) {
+        if (!result) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();

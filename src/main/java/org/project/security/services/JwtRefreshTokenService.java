@@ -11,18 +11,15 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
 public class JwtRefreshTokenService {
 
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final SecureRandom secureRandom = new SecureRandom();
     @Value("${app.jwtExpirationRefreshMs}")
     private long refreshExpiration;
-
-    private final RefreshTokenRepository refreshTokenRepository;
-
-    private final SecureRandom secureRandom = new SecureRandom();
 
     public JwtRefreshTokenService(RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;

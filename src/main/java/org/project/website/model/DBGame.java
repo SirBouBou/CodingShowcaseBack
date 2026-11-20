@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
-@Table(name="videogames")
+@Table(name = "videogames")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

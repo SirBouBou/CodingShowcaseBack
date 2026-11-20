@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.project.game.model.Game;
-import org.project.game.service.GameService;
 import org.project.game.repository.GameRepository;
 
 import java.util.Arrays;

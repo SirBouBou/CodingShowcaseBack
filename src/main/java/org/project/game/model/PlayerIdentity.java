@@ -5,8 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 @Getter
 @Setter

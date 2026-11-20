@@ -2,18 +2,16 @@ package org.project.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
-import org.project.auth.controller.AuthController;
-import org.project.common.enums.RegisterResult;
 import org.project.auth.dto.request.LoginRequest;
 import org.project.auth.dto.request.SignupRequest;
 import org.project.auth.dto.response.SigninResponse;
 import org.project.auth.dto.response.SignoutResponse;
 import org.project.auth.dto.response.UserInfoResponse;
+import org.project.auth.service.AuthService;
+import org.project.common.enums.RegisterResult;
 import org.project.game.model.PlayerId;
-import org.project.game.model.PlayerIdentity;
 import org.project.game.model.PlayerType;
 import org.project.security.jwt.JwtUtils;
-import org.project.auth.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -128,8 +126,8 @@ class AuthControllerTest {
                 .thenReturn(result);
 
         mockMvc.perform(
-                post("/api/auth/signout")
-        )
+                        post("/api/auth/signout")
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("You've been signed out!"));
 

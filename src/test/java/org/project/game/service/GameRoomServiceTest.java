@@ -2,11 +2,7 @@ package org.project.game.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.project.game.dto.GameDto;
-import org.project.game.dto.GameEvent;
-import org.project.game.dto.GameRoomDto;
-import org.project.game.dto.RoomEvent;
-import org.project.game.dto.TicTacToeGameDto;
+import org.project.game.dto.*;
 import org.project.game.model.*;
 import org.project.game.ticatactoe.TicTacToeCell;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -19,10 +15,14 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class GameRoomServiceTest {
-    private SimpMessagingTemplate messagingTemplate;
-    private GameRoomService service;
     private final PlayerIdentity creator = player("creator");
     private final PlayerIdentity guest = player("guest");
+    private SimpMessagingTemplate messagingTemplate;
+    private GameRoomService service;
+
+    private static PlayerIdentity player(String id) {
+        return new PlayerIdentity(new PlayerId(PlayerType.USER, id), id);
+    }
 
     @BeforeEach
     void setUp() {
@@ -117,9 +117,5 @@ class GameRoomServiceTest {
         assertTrue(service.joinRoom(room.getId(), creator).isEmpty());
         assertTrue(service.getGame(UUID.randomUUID()).isEmpty());
         assertTrue(service.getGame(room.getId()).isPresent());
-    }
-
-    private static PlayerIdentity player(String id) {
-        return new PlayerIdentity(new PlayerId(PlayerType.USER, id), id);
     }
 }

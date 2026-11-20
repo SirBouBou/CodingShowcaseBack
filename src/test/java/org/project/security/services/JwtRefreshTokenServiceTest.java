@@ -51,6 +51,7 @@ class JwtRefreshTokenServiceTest {
         jwtRefreshTokenService.revokeToken(refreshToken);
         assertEquals("Un token valable mais révoqué doit être invalide", Optional.empty(), jwtRefreshTokenService.verifyExpiration(refreshToken));
     }
+
     @Test
     void shouldExpireWhenTimesUp() {
         RefreshToken refreshToken = jwtRefreshTokenService.createRefreshToken(user);

@@ -8,8 +8,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-
 @Service
 @RequiredArgsConstructor
 public class CurrentIdentityService {
