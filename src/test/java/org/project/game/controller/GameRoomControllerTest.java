@@ -92,7 +92,7 @@ class GameRoomControllerTest {
 
         assertEquals(HttpStatus.OK, controller.joinRoom(roomId, authentication).getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST, controller.joinRoom(rejectedRoomId, authentication).getStatusCode());
-        assertEquals(HttpStatus.OK, controller.leaveRoom(roomId, authentication).getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, controller.leaveRoom(roomId, authentication).getStatusCode());
         assertEquals(HttpStatus.NOT_FOUND, controller.leaveRoom(unknownRoomId, authentication).getStatusCode());
     }
 
