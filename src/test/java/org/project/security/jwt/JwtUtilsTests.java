@@ -2,7 +2,6 @@ package org.project.security.jwt;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.project.auth.model.RefreshToken;
 import org.project.auth.model.User;
 import org.project.auth.repository.RefreshTokenRepository;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseCookie;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -24,7 +24,7 @@ class JwtUtilsTests {
     @Autowired
     private JwtUtils jwtUtils;
 
-    @Mock
+    @MockitoBean
     private RefreshTokenRepository refreshTokenRepository;
 
     private JwtRefreshTokenService jwtRefreshTokenService;
