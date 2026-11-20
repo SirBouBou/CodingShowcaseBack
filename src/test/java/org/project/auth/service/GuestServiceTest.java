@@ -45,7 +45,7 @@ class GuestServiceTest {
     void rejectsNullBlankAndTooLongNames() {
         assertThrows(InvalidPlayerNameException.class, () -> service.createGuest(null));
         assertThrows(InvalidPlayerNameException.class, () -> service.createGuest("  "));
-        assertThrows(InvalidPlayerNameException.class, () -> service.createGuest("a".repeat(21)));
+        assertThrows(InvalidPlayerNameException.class, () -> service.createGuest("aaaaaaaaaaaaaaaaaaaaa"));
         assertEquals("abcdefghijklmnopqrst",
                 service.createGuest("abcdefghijklmnopqrst").guest().getDisplayName());
     }
@@ -54,18 +54,20 @@ class GuestServiceTest {
     void updatesGuestNameAfterValidation() {
         PlayerIdentity guest = service.createGuest("Alice").guest();
         UUID id = UUID.fromString(guest.getId().value());
+        UUID random = UUID.randomUUID();
 
         service.updateName(id, "  Bob ");
         assertEquals("Bob", service.getGuest(id).getDisplayName());
         assertThrows(InvalidPlayerNameException.class, () -> service.updateName(id, ""));
-        assertThrows(IllegalArgumentException.class, () -> service.updateName(UUID.randomUUID(), "Bob"));
+        assertThrows(IllegalArgumentException.class, () -> service.updateName(random, "Bob"));
     }
 
     @Test
     void distinguishesMalformedAndUnknownGuestIds() {
+        String randomUuid = UUID.randomUUID().toString();
         assertThrows(IllegalArgumentException.class, () -> service.getCurrentGuest("not-a-uuid"));
         assertThrows(GuestNotFoundException.class,
-                () -> service.getCurrentGuest(UUID.randomUUID().toString()));
+                () -> service.getCurrentGuest(randomUuid));
         assertNull(service.getGuest(UUID.randomUUID()));
     }
 }

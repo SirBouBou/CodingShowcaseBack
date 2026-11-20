@@ -1,6 +1,7 @@
 package org.project.game.service;
 
 import lombok.RequiredArgsConstructor;
+import org.project.common.config.WebSocketPaths;
 import org.project.game.dto.GameDto;
 import org.project.game.dto.GameEvent;
 import org.project.game.dto.GameRoomDto;
@@ -68,7 +69,7 @@ public class GameRoomService {
         rooms.put(uuid, room);
         GameRoomDto dto = new GameRoomDto(room);
         messagingTemplate.convertAndSend(
-                "/topic/rooms",
+                WebSocketPaths.ROOMS,
                 new RoomEvent(RoomEventType.CREATED, dto)
         );
         return dto;
@@ -93,7 +94,7 @@ public class GameRoomService {
 
         GameRoomDto dto = new GameRoomDto(room);
         messagingTemplate.convertAndSend(
-                "/topic/rooms",
+                WebSocketPaths.ROOMS,
                 new RoomEvent(RoomEventType.JOINED, dto)
         );
 
@@ -103,7 +104,7 @@ public class GameRoomService {
                 && newStatus == GameStatus.PLAYING) {
 
             messagingTemplate.convertAndSend(
-                    "/topic/rooms/" + roomId,
+                    WebSocketPaths.room(roomId.toString()),
                     new GameEvent(
                             GameEventType.GAME_STARTED,
                             room.getGameDto()
@@ -121,7 +122,7 @@ public class GameRoomService {
         GameRoomDto dto = new GameRoomDto(room);
 
         messagingTemplate.convertAndSend(
-                "/topic/rooms",
+                WebSocketPaths.ROOMS,
                 new RoomEvent(RoomEventType.LEFT, dto)
         );
         if (room.getActivePlayers() == 0) {
@@ -152,7 +153,7 @@ public class GameRoomService {
         GameDto gameDto = room.getGameDto();
 
         messagingTemplate.convertAndSend(
-                "/topic/rooms/" + roomId,
+                WebSocketPaths.room(roomId.toString()),
                 new GameEvent(GameEventType.MOVE_PLAYED, gameDto)
         );
 

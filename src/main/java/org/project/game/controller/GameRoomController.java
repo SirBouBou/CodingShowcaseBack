@@ -77,20 +77,17 @@ public class GameRoomController {
     public ResponseEntity<GameRoomDto> joinRoom(@PathVariable UUID roomId, Authentication authentication) {
         PlayerIdentity player = currentIdentityService.getCurrentIdentity(authentication);
         Optional<GameRoomDto> result = gameRoomService.joinRoom(roomId, player);
-        if (result.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().body(result.get());
+        return result.map(gameRoomDto -> ResponseEntity.ok().body(gameRoomDto)).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PostMapping("/{roomId}/leave")
-    public ResponseEntity leaveRoom(@PathVariable UUID roomId, Authentication authentication) {
+    public ResponseEntity<Void> leaveRoom(@PathVariable UUID roomId, Authentication authentication) {
         PlayerIdentity player = currentIdentityService.getCurrentIdentity(authentication);
         boolean result = gameRoomService.leaveRoom(roomId, player);
         if (!result) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{roomId}/play")

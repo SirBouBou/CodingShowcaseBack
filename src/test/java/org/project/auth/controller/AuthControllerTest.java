@@ -9,8 +9,6 @@ import org.project.auth.dto.response.SignoutResponse;
 import org.project.auth.dto.response.UserInfoResponse;
 import org.project.auth.service.AuthService;
 import org.project.common.enums.RegisterResult;
-import org.project.game.model.PlayerId;
-import org.project.game.model.PlayerType;
 import org.project.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -54,8 +52,6 @@ class AuthControllerTest {
                         List.of("ROLE_USER"),
                         null
                 );
-
-        PlayerId playerResult = new PlayerId(PlayerType.USER, "1");
 
         ResponseCookie accessCookie =
                 ResponseCookie.from("access", "access-jwt").build();

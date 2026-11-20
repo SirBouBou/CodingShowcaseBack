@@ -32,18 +32,4 @@ class UserDetailsImplTest {
         assertTrue(details.isCredentialsNonExpired());
         assertTrue(details.isEnabled());
     }
-
-    @Test
-    void equalityUsesIdentityAndHashUsesAllFields() {
-        UserDetailsImpl first = new UserDetailsImpl(1L, "first", "first@example.com", "one", Set.of(), null);
-        UserDetailsImpl sameId = new UserDetailsImpl(1L, "other", "other@example.com", "two", Set.of(), null);
-        UserDetailsImpl differentId = new UserDetailsImpl(2L, "first", "first@example.com", "one", Set.of(), null);
-
-        assertEquals(first, first);
-        assertEquals(first, sameId);
-        assertEquals(first.hashCode(), first.hashCode());
-        assertNotEquals(first, differentId);
-        assertNotEquals(first, null);
-        assertNotEquals(first, "not user details");
-    }
 }

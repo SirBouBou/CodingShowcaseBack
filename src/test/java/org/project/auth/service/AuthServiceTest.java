@@ -1,6 +1,5 @@
 package org.project.auth.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthServiceTest {
+class AuthServiceTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
@@ -67,11 +66,6 @@ public class AuthServiceTest {
 
     @InjectMocks
     private AuthService authService;
-
-    @BeforeEach
-    public void setUp() {
-        User user = new User("testUsername", "testemail@email.com", "testPassword");
-    }
 
     @Test
     void authenticate_shouldGetErrorIfUserDontExist() throws Exception {
@@ -140,7 +134,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void register_shouldRejectExistingEmail() throws Exception {
+    void register_shouldRejectExistingEmail() {
         Mockito.when(userRepository.existsByEmail("email@email.com"))
                 .thenReturn(true);
         SignupRequest signupRequest = new SignupRequest("testUsernameDiff", "email@email.com", "passwordDiff", 0);
@@ -153,7 +147,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void register_shouldRegisterCorrectUser() throws Exception {
+    void register_shouldRegisterCorrectUser() {
         Mockito.when(roleRepository.findByName(ERole.ROLE_USER))
                 .thenReturn(Optional.of(new Role(1, ERole.ROLE_USER)));
         SignupRequest signupRequest = new SignupRequest("testUsernameDiff", "emaildiff@email.com", "passwordDiff", 0);
@@ -166,7 +160,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void register_shouldRegisterCorrectUserEvenWithoutIcon() throws Exception {
+    void register_shouldRegisterCorrectUserEvenWithoutIcon() {
         Mockito.when(roleRepository.findByName(ERole.ROLE_USER))
                 .thenReturn(Optional.of(new Role(1, ERole.ROLE_USER)));
         SignupRequest signupRequest = new SignupRequest("testUsernameDiff", "emaildiff@email.com", "passwordDiff", null);
@@ -188,7 +182,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void logoutClearsCookiesAndRevokesMatchingRefreshToken() {
+    void logout_shouldClearCookiesAndRevokeMatchingRefreshToken() {
         RefreshToken token = new RefreshToken();
         when(refreshTokenRepository.findByToken("refresh-token")).thenReturn(Optional.of(token));
         when(jwtUtils.getCleanJwtAccessCookie()).thenReturn(ResponseCookie.from("access", "").build());

@@ -25,11 +25,4 @@ public class CurrentIdentityService {
         }
         throw new AccessDeniedException("Unknown player identity");
     }
-
-    private boolean hasRole(Authentication authentication, String role) {
-        return authentication.getAuthorities().stream()
-                .anyMatch(authority ->
-                        authority.getAuthority().equals("ROLE_" + role)
-                );
-    }
 }

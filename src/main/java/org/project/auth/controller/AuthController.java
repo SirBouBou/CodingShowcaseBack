@@ -2,6 +2,7 @@ package org.project.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.project.auth.dto.request.LoginRequest;
 import org.project.auth.dto.request.SignupRequest;
 import org.project.auth.dto.response.MessageResponse;
@@ -14,8 +15,6 @@ import org.project.game.model.PlayerIdentity;
 import org.project.game.model.PlayerType;
 import org.project.security.jwt.JwtUtils;
 import org.project.security.services.UserDetailsImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,11 +25,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     AuthService authService;
 
@@ -44,9 +42,10 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<PlayerIdentity> signin(@Valid @RequestBody LoginRequest loginRequest) {
-        
+        log.info("Connection attempt");
         SigninResponse response = authService.authenticateUser(loginRequest);
         PlayerIdentity result = new PlayerIdentity(new PlayerId(PlayerType.USER, response.userInfoResponse().getId().toString()), response.userInfoResponse().getUsername());
+        log.debug("User {} connected", result.getId());
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, response.accessCookie())
                 .header(HttpHeaders.SET_COOKIE, response.refreshCookie())
@@ -55,11 +54,10 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<MessageResponse> signup(@Valid @RequestBody SignupRequest signUpRequest) {
+        log.info("Register attempt");
         RegisterResult result = authService.registerUser(signUpRequest);
         return switch (result) {
-            case SUCCESS -> ResponseEntity.ok(
-                    new MessageResponse("User registered successfully !")
-            );
+            case SUCCESS -> ResponseEntity.ok(new MessageResponse("User registered successfully !"));
 
             case USERNAME_ALREADY_EXISTS -> ResponseEntity.badRequest()
                     .body(new MessageResponse("Username is already taken !")
@@ -84,29 +82,26 @@ public class AuthController {
     public ResponseEntity<MessageResponse> refresh(HttpServletRequest request) {
         String jwt = jwtUtils.getRefreshCookie(request);
         Optional<String> result = authService.refreshToken(jwt);
-        if (result.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .build();
-        }
-
-        return ResponseEntity.ok()
+        return result.map(s -> ResponseEntity.ok()
                 .header(
-                        HttpHeaders.SET_COOKIE, result.get()
+                        HttpHeaders.SET_COOKIE, s
                 )
                 .body(
                         new MessageResponse("Access token refreshed")
-                );
+                )).orElseGet(() -> ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .build());
     }
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<PlayerIdentity> getCurrentUser(Authentication authentication) {
-        UserDetailsImpl userDetails =
-                (UserDetailsImpl) authentication.getPrincipal();
+        if (authentication == null ||
+                !(authentication.getPrincipal() instanceof UserDetailsImpl userDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         return ResponseEntity.ok(
                 authService.getCurrentUser(userDetails.getId())
         );
     }
-
 }

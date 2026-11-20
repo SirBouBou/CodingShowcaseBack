@@ -10,6 +10,7 @@ import org.project.game.model.GameStatus;
 import org.project.game.model.PlayerIdentity;
 
 import java.util.Arrays;
+import java.util.Random;
 
 @Getter
 @Setter
@@ -51,7 +52,7 @@ public class TicTacToeGame implements GamePlay {
                 return false;
             }
 
-            int random = (int) (Math.random() * 2);
+            int random = new Random().nextInt(2);
             if (random == 0) {
                 currentPlayer = this.playerX;
             } else {
@@ -91,7 +92,7 @@ public class TicTacToeGame implements GamePlay {
             return false;
         }
 
-        TicTacToeCell temp = TicTacToeCell.EMPTY;
+        TicTacToeCell temp;
         if (player.getId().equals(playerX.getId())) {
             temp = TicTacToeCell.X;
         } else if (player.getId().equals(playerO.getId())) {
@@ -109,7 +110,7 @@ public class TicTacToeGame implements GamePlay {
         }
 
         board[position] = temp;
-        if (!checkEnd()) {
+        if (Boolean.FALSE.equals(checkEnd())) {
             nextTurn();
         }
         return true;

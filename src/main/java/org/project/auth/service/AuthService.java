@@ -1,6 +1,6 @@
 package org.project.auth.service;
 
-import org.project.auth.controller.AuthController;
+import lombok.extern.slf4j.Slf4j;
 import org.project.auth.dto.request.LoginRequest;
 import org.project.auth.dto.request.SignupRequest;
 import org.project.auth.dto.response.SigninResponse;
@@ -20,8 +20,6 @@ import org.project.security.jwt.JwtUtils;
 import org.project.security.services.JwtRefreshTokenService;
 import org.project.security.services.UserDetailsImpl;
 import org.project.security.services.UserDetailsServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -39,8 +37,8 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class AuthService {
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     AuthenticationManager authenticationManager;
 
     UserRepository userRepository;
@@ -176,7 +174,7 @@ public class AuthService {
 
         ResponseCookie accessCookie = jwtUtils.generateAccessJwtCookie(userDetails);
 
-        logger.info("Access Token Refreshed");
+        log.info("Access Token Refreshed");
 
         return Optional.of(accessCookie.toString());
     }

@@ -56,6 +56,7 @@ class AuthEntryPointJwtTests {
             @Override
             public void setWriteListener(
                     jakarta.servlet.WriteListener writeListener) {
+                //Only needed to create valid object, never used
             }
         };
 
@@ -72,8 +73,8 @@ class AuthEntryPointJwtTests {
                 .readTree(output.toByteArray());
 
         assertEquals(401, json.get("status").asInt());
-        assertEquals("Unauthorized", json.get("error").asText());
-        assertEquals(message, json.get("message").asText());
-        assertEquals(path, json.get("path").asText());
+        assertEquals("Unauthorized", json.get("error").asString());
+        assertEquals(message, json.get("message").asString());
+        assertEquals(path, json.get("path").asString());
     }
 }

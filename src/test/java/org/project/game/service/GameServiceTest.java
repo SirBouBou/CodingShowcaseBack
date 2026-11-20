@@ -15,13 +15,13 @@ import java.util.List;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class GameServiceTest {
+class GameServiceTest {
     private GameService gameService;
     @Mock
     private GameRepository gameRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         gameService = new GameService(gameRepository);
         Game game1 = new Game("game1", "descGame1");
         Game game2 = new Game("game2", "descGame2");
@@ -32,7 +32,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void shouldGetAllGames() {
+    void shouldGetAllGames() {
         List<Game> found = gameService.getAll();
         assertEquals("Le nombre de jeux trouvés devrait être 2", 2, found.size());
     }

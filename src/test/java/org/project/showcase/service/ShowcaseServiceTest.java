@@ -15,14 +15,13 @@ import java.util.List;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-
-public class ShowcaseServiceTest {
+class ShowcaseServiceTest {
     private ShowcaseService showcaseService;
     @Mock
     private ShowcaseRepository showcaseRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         showcaseService = new ShowcaseService(showcaseRepository);
         Showcase show1 = new Showcase("show1", "descShow1");
         Showcase show2 = new Showcase("show2", "descShow2");
@@ -33,7 +32,7 @@ public class ShowcaseServiceTest {
     }
 
     @Test
-    public void shouldGetAllShowcases() {
+    void shouldGetAllShowcases() {
         List<Showcase> found = showcaseService.getAll();
         assertEquals("Le nombre de showcase trouvés devrait être 2", 2, found.size());
     }

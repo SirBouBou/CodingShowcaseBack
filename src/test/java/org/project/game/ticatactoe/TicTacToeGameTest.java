@@ -87,7 +87,7 @@ class TicTacToeGameTest {
 
         PlayerIdentity otherTurn = game.getCurrentPlayer().equals(playerX) ? playerO : playerX;
         assertFalse(game.play(move(otherTurn, 0)));
-        assertSame(game.getBoard()[0], TicTacToeCell.EMPTY);
+        assertSame(TicTacToeCell.EMPTY, game.getBoard()[0]);
     }
 
     @Test
